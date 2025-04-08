@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx", // Importanță pentru JSX în React
+    "moduleResolution": "node", // Folosește rezolvarea modulelor Node.js
+    "esModuleInterop": true, // Permite interacțiunea între modulele ES și CommonJS
+    "skipLibCheck": true, // Opțional, ajută la evitarea unor erori de compilare legate de biblioteci
+    "allowJs": true, // Permite folosirea fișierelor JavaScript alături de cele TypeScript
+    "lib": ["dom", "es2015"]
+  },
+  "include": ["src"] // Include doar fișierele din directorul `src`
+}
