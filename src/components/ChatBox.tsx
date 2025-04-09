@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ChatBox = ({ setBackground }) => {
+interface ImageUrls {
+    blueGemUrl: string | null;
+    redGemUrl: string | null;
+    yellowGemUrl: string | null;
+    purpleGemUrl: string | null;
+    greenGemUrl: string | null;
+    zeusUrl: string | null;
+    crownUrl: string | null;
+    hourglassUrl: string | null;
+    ringUrl: string | null;
+    gobletUrl: string | null;
+}
+
+const ChatBox = ({ setBackground, setImageUrls }) => { 
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -18,25 +31,60 @@ const ChatBox = ({ setBackground }) => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:3001/generate-image', { prompt: input });
-            console.log('Full API response:', response.data);
-
-            if (response.data.imageUrl) {
-                // Set as background
-                document.body.style.backgroundImage = `url(http://localhost:3001${response.data.imageUrl})`;
+            //Background Image
+            const backgroundResponse = await axios.post('http://localhost:3001/background', { prompt: input });
+            if (backgroundResponse.data.imageUrl) {
+                document.body.style.backgroundImage = `url(http://localhost:3001${backgroundResponse.data.imageUrl})`;
                 document.body.style.backgroundSize = 'cover';
                 document.body.style.backgroundRepeat = 'no-repeat';
             } else {
-                setError('Image data not found in the response.');
-                console.error('Image data or mimeType not found in response.');
+                setError('Background image data not found in the response.');
             }
-        } catch (error) {
-            setError('Failed to generate background. Please try again.');
-            console.error('Error generating image:', error);
-        }
 
-        setLoading(false);
+            //All symbols
+            const newImageUrls: ImageUrls = {
+                blueGemUrl: null,
+                redGemUrl: null,
+                yellowGemUrl: null,
+                purpleGemUrl: null,
+                greenGemUrl: null,
+                zeusUrl: null,
+                crownUrl: null,
+                hourglassUrl: null,
+                ringUrl: null,
+                gobletUrl: null,
+            };
+
+            const promises = Object.keys(newImageUrls).map(async (symbol) => {
+                if(symbol==='zeusUrl'){
+                    const response = await axios.post(`http://localhost:3001/${symbol.replace('Url', '')}`, { prompt: input });
+                    if (response.data.imageUrl) {
+                        newImageUrls[symbol] = `http://localhost:3001${response.data.imageUrl}`;
+                    } else {
+                        setError(`${symbol.replace('Url', '')} image data not found in the response.`);
+                    }
+                } else{
+                    const response = await axios.post(`http://localhost:3001/${symbol.replace('Url', '')}`, { prompt: input });
+                    if (response.data.imageUrl) {
+                        newImageUrls[symbol] = `http://localhost:3001${response.data.imageUrl}`;
+                    } else {
+                        setError(`${symbol.replace('Url', '')} image data not found in the response.`);
+                    }
+                }
+
+            });
+
+            await Promise.all(promises);
+            setImageUrls(newImageUrls); 
+
+        } catch (error) {
+            setError('Failed to generate images. Please try again.');
+        } finally {
+            setLoading(false);
+            setInput("");
+        }
     };
+
     return (
         <div className="chat-box">
             <h2>Set Your Own Theme</h2>
@@ -49,7 +97,7 @@ const ChatBox = ({ setBackground }) => {
                     className="input-field"
                 />
                 <button type="submit" className="submit-btn" disabled={loading}>
-                    {loading ? 'Generating...' : 'Generate Background'}
+                    {loading ? 'Generating...' : 'Generate Images'}
                 </button>
             </form>
             {error && <p className="error-message">{error}</p>}

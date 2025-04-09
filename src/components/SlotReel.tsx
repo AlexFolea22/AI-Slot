@@ -1,27 +1,20 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 interface SlotReelProps {
     symbol: string;
     delay: string;
+    imageMap: Record<string, string>; 
 }
 
-const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay }) => {
+const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay, imageMap }) => {
     const audioRef = useRef<HTMLAudioElement>(null);
+    const [currentImageUrl, setCurrentImageUrl] = useState<string>(() => {
+        return imageMap[symbol] || '/default.png';
+    });
 
-    const imageMap = {
-        crown: '/crown.png',
-        hourglass: '/hourglass.png',
-        ring: '/ring.png',
-        goblet: '/goblet.png',
-        redGem: '/redGem.png',
-        purpleGem: '/purpleGem.png',
-        yellowGem: '/yellowGem.png',
-        greenGem: '/greenGem.png',
-        blueGem: '/blueGem.png',
-        zeus: '/zeus.png',
-    };
-
-    const imageUrl = imageMap[symbol] || '/default.png';
+    useEffect(() => {
+        setCurrentImageUrl(imageMap[symbol] || '/default.png');
+    }, [imageMap, symbol]);
 
     const handleAnimationEnd = () => {
         if (audioRef.current) {
@@ -34,7 +27,7 @@ const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay }) => {
     return (
         <div className="slot-reel">
             <img
-                src={imageUrl}
+                src={currentImageUrl}
                 alt="slot symbol"
                 onAnimationEnd={handleAnimationEnd}
                 style={{
