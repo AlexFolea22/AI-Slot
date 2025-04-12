@@ -3,13 +3,22 @@ import React, { useRef, useState, useEffect } from 'react';
 interface SlotReelProps {
     symbol: string;
     delay: string;
-    imageMap: Record<string, string>; 
+    imageMap: Record<string, string>;
+    className?: string;
+    maxDelay: number;
 }
 
-const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay, imageMap }) => {
+const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay, imageMap, className, maxDelay }) => {
     const audioRef = useRef<HTMLAudioElement>(null);
+    const audioRefPulse = useRef<HTMLAudioElement>(null);
+
     const [currentImageUrl, setCurrentImageUrl] = useState<string>(() => {
         return imageMap[symbol] || '/default.png';
+    });
+    const [animationStyle, setAnimationStyle] = useState<React.CSSProperties>({
+        opacity: 0,
+        animation: `fall 0.25s ease-out forwards`,
+        animationDelay: delay,
     });
 
     useEffect(() => {
@@ -20,7 +29,29 @@ const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay, imageMap }) => {
         if (audioRef.current) {
             audioRef.current.currentTime = 0;
             audioRef.current.volume = 0.2;
-            audioRef.current.play();
+            audioRef.current.play(); 
+        }
+
+        if (className === "animated-symbol") {
+            const pulseDelay = maxDelay - parseFloat(delay); 
+
+            setTimeout(() => {
+                if (audioRefPulse.current) {
+                    audioRefPulse.current.currentTime = 0;
+                    audioRefPulse.current.volume = 0.01;
+                    audioRefPulse.current.play(); 
+                }
+            }, pulseDelay * 1000); 
+            setAnimationStyle((prev) => ({
+                ...prev,
+                opacity: 1,
+                animation: `pulse 1s ${pulseDelay}s infinite alternate`,
+            }));
+        } else {
+            setAnimationStyle((prev) => ({
+                ...prev,
+                opacity: 1,
+            }));
         }
     };
 
@@ -30,13 +61,11 @@ const SlotReel: React.FC<SlotReelProps> = ({ symbol, delay, imageMap }) => {
                 src={currentImageUrl}
                 alt="slot symbol"
                 onAnimationEnd={handleAnimationEnd}
-                style={{
-                    opacity: 0,
-                    animation: `fall 0.25s ease-out forwards`,
-                    animationDelay: delay,
-                }}
+                style={animationStyle}
+                className={className}
             />
-            <audio ref={audioRef} src="click.mp3" preload="auto" />
+            <audio ref={audioRef} src="glitt.mp3" preload="auto" />
+            <audio ref={audioRefPulse} src="shine.mp3" preload="auto" />
         </div>
     );
 };

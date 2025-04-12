@@ -89,15 +89,17 @@ const ChatBox = ({ setBackground, setImageUrls }) => {
         <div className="chat-box">
             <h2>Set Your Own Theme</h2>
             <form onSubmit={handleSubmit}>
+                <div className="input-label">
                 <input
                     type="text"
-                    placeholder="Ex: Cyberpunk Tokyo"
+                    placeholder="Ex: Alien Pirates"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     className="input-field"
                 />
+                </div>
                 <button type="submit" className="submit-btn" disabled={loading}>
-                    {loading ? 'Generating...' : 'Generate Images'}
+                    {loading ? 'Generating...' : 'Generate'}
                 </button>
             </form>
             {error && <p className="error-message">{error}</p>}

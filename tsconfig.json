@@ -5,7 +5,7 @@
     "esModuleInterop": true, // Permite interacțiunea între modulele ES și CommonJS
     "skipLibCheck": true, // Opțional, ajută la evitarea unor erori de compilare legate de biblioteci
     "allowJs": true, // Permite folosirea fișierelor JavaScript alături de cele TypeScript
-    "lib": ["dom", "es2015"]
+    "lib": ["dom", "es2016"]
   },
   "include": ["src"] // Include doar fișierele din directorul `src`
 }

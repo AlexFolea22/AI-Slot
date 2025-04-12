@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
 import ChatBox from './components/ChatBox';
-import SlotCanvas from './components/SlotCanvas';
 import SlotMachine from './components/SlotMachine';
 
 const App: React.FC = () => {

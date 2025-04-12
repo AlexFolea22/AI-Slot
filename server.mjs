@@ -77,57 +77,57 @@ async function generateAndSaveImage(req, res, prompt, filename, api_key) {
 }
 
 app.post('/background', (req, res) => {
-    const prompt = `Generate a background image of ${req.body.prompt} for a website. The image should be wide (horizontal) and in PNG format.`;
+    const prompt = `Generate a background image of ${req.body.prompt} for a website background. The image should be wide (horizontal) and in PNG format.`;
     generateAndSaveImage(req, res, prompt, 'background', apiKey);
 });
 
 app.post('/blueGem', (req, res) => {
-    const prompt = `Generate an icon of a blue gem with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a blue gem with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'blueGem', apiKey1);
 });
 
 app.post('/redGem', (req, res) => {
-    const prompt = `Generate an icon of a red gem with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a red gem with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'redGem', apiKey2);
 });
 
 app.post('/yellowGem', (req, res) => {
-    const prompt = `Generate an icon of a yellow gem with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a yellow gem with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'yellowGem', apiKey3);
 });
 
 app.post('/purpleGem', (req, res) => {
-    const prompt = `Generate an icon of a purple gem with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a purple gem with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'purpleGem', apiKey4); 
 });
 
 app.post('/greenGem', (req, res) => {
-    const prompt = `Generate an icon of a green gem with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a green gem with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'greenGem', apiKey5); 
 });
 
 app.post('/zeus', (req, res) => {
-    const prompt = `Generate an icon of a zeus with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a slotmachine scatter symbol with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'zeus', apiKey6); 
 });
 
 app.post('/crown', (req, res) => {
-    const prompt = `Generate an icon of a crown with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a crown with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'crown', apiKey7); 
 });
 
 app.post('/hourglass', (req, res) => {
-    const prompt = `Generate an icon of a hourglass with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a hourglass with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'hourglass', apiKey8); 
 });
 
 app.post('/ring', (req, res) => {
-    const prompt = `Generate an icon of a ring with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a ring with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'ring', apiKey9); 
 });
 
 app.post('/goblet', (req, res) => {
-    const prompt = `Generate an icon of a goblet with ${req.body.prompt} theme. The image should be square and in PNG format with transparent background.`;
+    const prompt = `Generate an icon of a goblet with ${req.body.prompt} theme. The image should be square and in PNG format with black background.`;
     generateAndSaveImage(req, res, prompt, 'goblet', apiKey10); 
 })
 

@@ -23,15 +23,14 @@ interface ImageUrls {
 const SlotMachine: React.FC = () => {
     const generateInitialReels = () => {
         const reelStops = generateReelStops();
-        console.log("generateInitialReels - reelStops:", reelStops);
         const reels: string[][] = [];
         for (let i = 0; i < 6; i++) {
             reels.push(reelStops.slice(i * 5, (i + 1) * 5));
         }
-        console.log("generateInitialReels - reels:", reels);
         return reels;
     };
 
+    const [animatedSymbols, setAnimatedSymbols] = useState<string[]>([]);
     const [reels, setReels] = useState<string[][]>(generateInitialReels());
     const [balance, setBalance] = useState<number>(1000);
     const [spincostIndex, setSpincostIndex] = useState<number>(4);
@@ -63,8 +62,10 @@ const SlotMachine: React.FC = () => {
         blueGem: '/blueGem.png',
         zeus: '/zeus.png',
     });
+    const [maxDelay, setMaxDelay] = useState(0); // Added maxDelay state
 
     useEffect(() => {
+        console.log("ImageUrls changed:", imageUrls);
         if (imageUrls.blueGemUrl) {
             setImageMap({
                 crown: imageUrls.crownUrl || '/crown.png',
@@ -89,22 +90,35 @@ const SlotMachine: React.FC = () => {
 
         setSpinning(true);
         setBalance((prev) => prev - spincost);
+        setMaxDelay(6 * 0.2 + 5 * 0.1); // Calculate maxDelay once per spin
 
         setTimeout(() => {
             const newReels = generateInitialReels();
-            console.log("spin - newReels:", newReels);
             setReels(newReels);
             setSpinCount((prev) => prev + 1);
             setSpinning(false);
 
             const reelStops = newReels.reduce((acc, val) => acc.concat(val), []);
-
             const payout = calculatePayout(reelStops);
-            setBalance((prev) => prev + payout* spincost);
+            setBalance((prev) => prev + payout * spincost);
+
+            const symbolCounts: { [key: string]: number } = {};
+            reelStops.forEach((symbol) => {
+                symbolCounts[symbol] = (symbolCounts[symbol] || 0) + 1;
+            });
+
+            const winningSymbols: string[] = [];
+            for (const symbol in symbolCounts) {
+                if (symbolCounts[symbol] >= 8) {
+                    winningSymbols.push(symbol);
+                }
+            }
+
+            setAnimatedSymbols(winningSymbols);
+            console.log("Animated Symbols:", winningSymbols);
 
             if (triggerFreeSpins(reelStops)) {
                 alert('Free Spins Triggered');
-                // Pentru speciala mai tarziu
             }
         }, 500);
     };
@@ -117,45 +131,51 @@ const SlotMachine: React.FC = () => {
         setSpincostIndex((prev) => Math.max(prev - 1, 0));
     };
 
+    useEffect(() => {
+        console.log("SlotMachine re-rendered");
+    });
+
     return (
-        <div
-            className="slot-machine-container"
-            style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', height: '100vh' }}
-        >
+        <div className="slot-machine-container" style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', height: '100vh' }}>
             <div className="slot-machine">
                 <div className="reels-container">
                     <div className="reels">
                         {reels.map((column, colIndex) => (
                             <div key={colIndex} className={`slot-reel-column ${spinning ? 'spinning' : ''}`}>
                                 {column.map((symbol, rowIndex) => {
+                                    const isAnimated = animatedSymbols.includes(symbol);
+                                    const currentDelay = colIndex * 0.2 + rowIndex * 0.1;
+
                                     return (
                                         <SlotReel
                                             key={`${symbol}-${rowIndex}-${colIndex}-${spinCount}`}
                                             symbol={symbol}
-                                            delay={`${colIndex * 0.2 + rowIndex * 0.1}s`}
+                                            delay={`${currentDelay}s`}
                                             imageMap={imageMap}
+                                            className={isAnimated ? 'animated-symbol' : ''}
+                                            maxDelay={maxDelay} // Pass maxDelay state
                                         />
                                     );
                                 })}
                             </div>
                         ))}
                     </div>
+                    <SpinButton onSpin={spin} />
                 </div>
-                <SpinButton onSpin={spin} />
-            </div>
 
-            <div className="controls">
-                <div className="balance">
-                    <p>Balance: ${balance.toFixed(2)}</p>
-                </div>
-                <div className="spin-cost">
-                    <button onClick={decreaseBet}>-</button>
-                    <p>Cost: ${spincost}</p>
-                    <button onClick={increaseBet}>+</button>
+                <div className="controls">
+                    <div className="balance">
+                        <p>Balance: ${balance.toFixed(2)}</p>
+                    </div>
+                    <div className="spin-cost">
+                        <button onClick={decreaseBet}>-</button>
+                        <p>Cost: ${spincost}</p>
+                        <button onClick={increaseBet}>+</button>
+                    </div>
+
+                <ChatBox setBackground={setBackground} setImageUrls={setImageUrls} />
                 </div>
             </div>
-
-            <ChatBox setBackground={setBackground} setImageUrls={setImageUrls} />
         </div>
     );
 };
